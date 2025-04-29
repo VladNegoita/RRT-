@@ -22,8 +22,8 @@ class RRTStarHelpers:
         goal,
         num_obstacles,
         map_size,
-        step_size=0.2,
-        max_iter=3000,
+        step_size=0.25,
+        max_iter=6000,
     ):
         self.start = Node(start[0], start[1])
         self.goal = Node(goal[0], goal[1])
@@ -32,7 +32,7 @@ class RRTStarHelpers:
         self.step_size = step_size
         self.max_iter = max_iter
         self.node_list = [self.start]
-        self.goal_region_radius = 0.4
+        self.goal_region_radius = 0.6
         self.search_radius = 2.0
 
         self.path: None | List = None
@@ -41,7 +41,7 @@ class RRTStarHelpers:
 
         # For MI-RRT*
         self.u = math.hypot(start[0] - goal[0], start[1] - goal[1])
-        self.nu, self.c_prev, self.p_k = 0.999, 10 ** 7, 1.0
+        self.nu, self.c_prev, self.p_k = 0.99, 10 ** 7, 0.5
 
         self.fig, self.ax = plt.subplots(figsize=(8, 8), dpi=100)
         self.setup_visualization()
@@ -371,9 +371,6 @@ def main():
                     or rrt_star_helpers.best_node.cost > new_node.cost
                 ):
                     rrt_star_helpers.best_node = new_node
-
-                if not rrt_star_helpers.goal_reached:
-                    print('Goal reached!')
 
                 rrt_star_helpers.goal_reached = True
                 rrt_star_helpers.path = rrt_star_helpers.generate_final_path(new_node)
